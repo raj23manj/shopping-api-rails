@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_06_085813) do
+ActiveRecord::Schema.define(version: 2019_12_06_145006) do
 
   create_table "discount_rules", force: :cascade do |t|
     t.integer "product_id"
@@ -27,6 +27,13 @@ ActiveRecord::Schema.define(version: 2019_12_06_085813) do
     t.string "name"
     t.decimal "price"
     t.boolean "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "total_discount_rules", force: :cascade do |t|
+    t.integer "total"
+    t.integer "additional_discount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

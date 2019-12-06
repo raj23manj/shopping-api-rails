@@ -10,5 +10,5 @@
   * bundle exec rspec
 
 * Initial Data Seeding
-  * rake products:data
-  * rake discount:data
+  * rake seed:data
+  
