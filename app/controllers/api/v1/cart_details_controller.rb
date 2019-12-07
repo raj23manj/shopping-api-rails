@@ -9,7 +9,7 @@ module Api
       # }
       def create
         data = @cart_service.update_or_create_cart_detail(cart_detail_params) 
-        json_response(data, :created)
+        json_response(CartDetailSerializer.new(data.first).as_json, :created)
       end
       
       private
