@@ -7,6 +7,7 @@
   * rails db:migrate
 
 * How to run the test suite
+  * rails db:migrate RAILS_ENV=test
   * bundle exec rspec
 
 * Initial Data Seeding
