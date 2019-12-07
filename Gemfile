@@ -51,3 +51,5 @@ group :test do
   gem 'faker'
   gem 'database_cleaner'
 end
+
+gem 'active_model_serializers'

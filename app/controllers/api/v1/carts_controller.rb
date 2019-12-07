@@ -5,7 +5,7 @@ module Api
       
       def create
         cart = @cart_service.create_cart(product_params[:cart_detail]) if params[:cart][:is_new] == "true"
-        json_response(cart, :created)
+        json_response(CartSerializer.new(cart).as_json, :created)
       end
       
       private
