@@ -38,7 +38,7 @@ RSpec.describe 'Cart API', type: :request do
     
       it 'returns status code 422' do
         allow(@cart_service).to receive(:create_cart).and_return({
-                                                                    "message": "Validation failed: Product must exist, Product can't be blank"
+                                                                  "message": "Validation failed: Product must exist, Product can't be blank"
                                                                 })
         expect(response).to have_http_status(422)
       end

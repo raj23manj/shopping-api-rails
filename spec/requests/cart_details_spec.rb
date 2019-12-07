@@ -10,15 +10,15 @@ RSpec.describe 'CartDetail API', type: :request do
     context 'when the request is valid' do
       before { post "/api/v1/carts/#{cart.id}/cart_details", params: valid_attributes }
 
-      it 'creates a cart' do
+      it 'creates a cart detail' do
         allow(@cart_service).to receive(:update_or_create_cart_detail).and_return([{
                                                                                     "data": {
                                                                                         "id": 11,
                                                                                         "qty": 41,
                                                                                         "product_id": product.id,
                                                                                         "cart_id": cart.id,
-                                                                                        "actual_price": null,
-                                                                                        "discounted_price": null
+                                                                                        "actual_price": nil,
+                                                                                        "discounted_price": nil
                                                                                     }
                                                                                 }])
         expect(json["data"]["qty"]).to eq(41)
@@ -31,8 +31,8 @@ RSpec.describe 'CartDetail API', type: :request do
                                                                       "qty": 41,
                                                                       "product_id": product.id,
                                                                       "cart_id": cart.id,
-                                                                      "actual_price": null,
-                                                                      "discounted_price": null
+                                                                      "actual_price": nil,
+                                                                      "discounted_price": nil
                                                                   }
                                                               })
         

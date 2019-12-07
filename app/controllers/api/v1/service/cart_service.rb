@@ -19,6 +19,7 @@ module Api
             cart_found = create_cart_detail(cart_detail) 
           else
             cart_found = cart_found.update(qty: cart_detail[:qty])
+            cart_found = cart_found.first
           end  
           cart_found  
         end  
