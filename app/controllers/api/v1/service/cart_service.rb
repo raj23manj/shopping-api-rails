@@ -5,16 +5,11 @@ module Api
         
         def update_or_create_cart_detail(cart_detail)
           cart_found = find_cart_detail(cart_detail)
+          
           if(cart_found.blank?)
             create_cart_detail(cart_detail) 
           else
             cart_found.update(qty: cart_detail[:qty])
-            # if cart_detail[:qty] == 0
-            #   cart_details = find_cart_with_items(cart_detail[:cart_id])
-            #   if(cart_details.size == 0)
-            #     cart_details.update(active: false)
-            #   end  
-            # end  
           end    
         end  
         
@@ -36,8 +31,8 @@ module Api
         
         def find_cart_detail(cart_detail)
           CartDetail.where("cart_id = :c_id and product_id = :p_id ", 
-                          { :c_id => cart_detail[:product_id], 
-                            :p_id => cart_detail[:cart_id]
+                          { :c_id => cart_detail[:cart_id], 
+                            :p_id => cart_detail[:product_id]
                           })
         end
         

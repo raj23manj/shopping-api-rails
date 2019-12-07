@@ -3,7 +3,10 @@ module Api
   module V1
     class CartDetailsController < ApplicationController
       before_action :set_cart_service, only: [:create]
-      
+      #http://localhost:3000/api/v1/carts/10/cart_details
+      #{
+      #   "cart": {"is_new": "true", "cart_detail": {"product_id": "19", "qty": "5"} }
+      # }
       def create
         @cart_service.update_or_create_cart_detail(cart_detail_params) 
         json_response("Sucess", :created)
