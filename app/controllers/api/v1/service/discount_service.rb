@@ -12,7 +12,7 @@ module Api
         
         def calculate_discount(cart_items)
           data = discount_on_products(cart_items)
-          data.merge({discounted_total: discount_on_total(data[:total_price])})
+          data.merge({discount_on_total(data[:total_price])})
         end
         
         private
@@ -29,7 +29,8 @@ module Api
                                                   cart_qty: item.c_qty,
                                                   product_name: item.p_name,
                                                   actual_product_price: item.p_price,
-                                                  discounted_price: calculate_discount,
+                                                  actual_total: (item.c_qty * item.p_price),
+                                                  discounted_total: (p_discount_rule.blank? ? 0 : calculate_discount),
                                                   actual_discount_price: (p_discount_rule.blank? ? 0 : p_discount_rule.discount_price),
                                                   actual_discount_qty: (p_discount_rule.blank? ? 0 : p_discount_rule.qty)
                                                 )
@@ -40,11 +41,15 @@ module Api
         
         def discount_on_total(total)
           t_discount_rule = (total_discount_rules.select {|rule| rule.total > total}).sort {|a,b| b <=> a}.first
+          if t_discount_rule.present?
+            { discounted_total: (total - t_discount_rule.additional_discount), additional_discount: t_discount_rule.additional_discount}
+          else
+            { discounted_total: 0, additional_discount: 0}
+          end    
         end  
         
         def calculate_actual_discount(rule, qty, actual_price)
           #3 => 75, 5, 10
-          return (qty * actual_price) if rule.blank?
           total = rule.discount_price + (actual_price * (qty - rule.qty))
         end    
         
