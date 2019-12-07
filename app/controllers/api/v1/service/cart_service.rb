@@ -3,14 +3,24 @@ module Api
     module Service  
       class CartService
         
+        def create_cart(cart_detail, user_id=1)
+          cart = nil
+          ActiveRecord::Base.transaction do
+            cart = Cart.create!({user_id: user_id, active: true})
+            cart_detail = create_cart_detail(cart_detail.merge({cart_id: cart.id}))
+          end
+          cart
+        end
+        
         def update_or_create_cart_detail(cart_detail)
           cart_found = find_cart_detail(cart_detail)
           
           if(cart_found.blank?)
-            create_cart_detail(cart_detail) 
+            cart_found = create_cart_detail(cart_detail) 
           else
-            cart_found.update(qty: cart_detail[:qty])
-          end    
+            cart_found = cart_found.update(qty: cart_detail[:qty])
+          end  
+          cart_found  
         end  
         
         def create_cart_detail(cart_detail)
@@ -19,15 +29,6 @@ module Api
                                cart_id: cart_detail[:cart_id]
                             })
         end  
-        
-        def create_cart(cart_detail, user_id=1)
-          cart = nil
-          ActiveRecord::Base.transaction do
-            cart = Cart.create!({user_id: user_id, active: true})
-            create_cart_detail(cart_detail.merge({cart_id: cart.id}))
-          end
-          cart
-        end
         
         def find_cart_detail(cart_detail)
           CartDetail.where("cart_id = :c_id and product_id = :p_id ", 
