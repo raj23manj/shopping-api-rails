@@ -3,6 +3,12 @@ module Api
     module Service  
       class CartService
         
+        attr_reader :discount_service
+        
+        def initialize
+          @discount_service = Service::DiscountService.new
+        end
+        
         def create_cart(cart_detail, user_id=1)
           cart = nil
           ActiveRecord::Base.transaction do
@@ -40,7 +46,12 @@ module Api
         
         def find_cart_with_items(id)
           Cart.joins(:cart_details).where(id: id)
-        end      
+        end 
+        
+        def discounted_cart(cart_id)
+          cart_items = CartDetail.find_by_cart_id(cart_id).to_a
+          discount_service.calculate_discount(cart_items)
+        end   
         
       end # class End 
     end 

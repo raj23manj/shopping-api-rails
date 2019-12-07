@@ -3,6 +3,7 @@ class CreateTotalDiscountRules < ActiveRecord::Migration[5.2]
     create_table :total_discount_rules do |t|
       t.integer :total
       t.integer :additional_discount  
+      t.boolean :active
       t.timestamps
     end
   end

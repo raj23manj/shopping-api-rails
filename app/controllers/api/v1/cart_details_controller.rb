@@ -2,7 +2,11 @@
 module Api
   module V1
     class CartDetailsController < ApplicationController
-      before_action :set_cart_service, only: [:create]
+      before_action :set_cart_service, only: [:create, :index]
+      
+      def index
+      end  
+      
       #http://localhost:3000/api/v1/carts/10/cart_details
       #{
       #   "cart_detail": {"product_id": "19", "qty": null, "cart_id": "10"} 

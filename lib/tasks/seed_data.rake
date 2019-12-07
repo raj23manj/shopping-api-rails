@@ -3,8 +3,8 @@ namespace :seed do
   task data: :environment do 
     
     # Delete All Data First
-    Product.delete_all
     DiscountRule.delete_all
+    Product.delete_all
     TotalDiscountRule.delete_all
     
     # Create Products First
@@ -28,6 +28,6 @@ namespace :seed do
                           discount_price: discount[1]) unless discount.blank?
     end
     
-    TotalDiscountRule.create(total: 150, additional_discount: 20)
+    TotalDiscountRule.create(total: 150, additional_discount: 20, active: true)
   end
 end

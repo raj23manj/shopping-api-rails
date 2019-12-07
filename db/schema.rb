@@ -16,8 +16,6 @@ ActiveRecord::Schema.define(version: 2019_12_07_014259) do
     t.integer "product_id"
     t.integer "cart_id"
     t.integer "qty"
-    t.decimal "actual_price"
-    t.decimal "discounted_price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cart_id"], name: "index_cart_details_on_cart_id"
@@ -53,6 +51,7 @@ ActiveRecord::Schema.define(version: 2019_12_07_014259) do
   create_table "total_discount_rules", force: :cascade do |t|
     t.integer "total"
     t.integer "additional_discount"
+    t.boolean "active"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
