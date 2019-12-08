@@ -36,24 +36,24 @@ RSpec.describe 'CartDetail API', type: :request do
       end
     end
 
-    # context 'when the request is invalid' do
-    #   before { post "/api/v1/carts/#{cart.id}/cart_details", params: { "cart_detail": {"product_id": nil, "qty": "41", "cart_id": cart.id} } }
-    # 
-    #   it 'returns status code 422' do
-    #     allow(@cart_service).to receive(:update_or_create_cart_detail).and_return({
-    #                                                                                 "message": "Validation failed: Product must exist, Product can't be blank"
-    #                                                                               })
-    #     expect(response).to have_http_status(200)
-    #   end
-    # 
-    #   it 'returns a validation failure message' do
-    #     allow(@cart_service).to receive(:update_or_create_cart_detail).and_return({
-    #                                                               "message": "Validation failed: Product must exist, Product can't be blank"
-    #                                                             })
-    # 
-    #     expect(json["message"])
-    #       .to match("Validation failed: Product must exist, Product can't be blank")
-    #   end
-    # end
+    context 'when the request is invalid' do
+      before { post "/api/v1/carts/#{cart.id}/cart_details", params: { "cart_detail": {"product_id": nil, "qty": "41", "cart_id": cart.id} } }
+    
+      it 'returns status code 422' do
+        allow(@cart_service).to receive(:update_or_create_cart_detail).and_return({
+                                                                                    "message": "Validation failed: Product must exist, Product can't be blank"
+                                                                                  })
+        expect(response).to have_http_status(422)
+      end
+    
+      it 'returns a validation failure message' do
+        allow(@cart_service).to receive(:update_or_create_cart_detail).and_return({
+                                                                                    "message": "Validation failed: Product must exist, Product can't be blank"
+                                                                                  })
+    
+        expect(json["message"])
+          .to match("Validation failed: Product must exist, Product can't be blank")
+      end
+    end
   end
 end  

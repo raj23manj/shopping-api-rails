@@ -28,10 +28,6 @@ module Api
           cart_found  
         end  
         
-        def find_cart_with_items(id)
-          Cart.joins(:cart_details).where(id: id)
-        end 
-        
         def discounted_cart(cart_id)
           discount_service.calculate_discount(cart_detail_with_product(cart_id))
         end 

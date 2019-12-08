@@ -11,6 +11,9 @@ require 'rspec/rails'
 # require database cleaner at the top level
 require 'database_cleaner'
 
+require 'simplecov'
+SimpleCov.start
+
 # configure shoulda matchers to use rspec as the test framework and full matcher libraries for rails
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
