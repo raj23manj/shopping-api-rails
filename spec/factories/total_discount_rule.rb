@@ -1,9 +1,7 @@
 FactoryBot.define do
-  factory :total_dicsount_rule do
-    product_id { nil }
+  factory :total_discount_rule do
+    total { nil }
+    additional_discount { nil }
     active { true }
-    qty { nil }
-    discount_price { nil }
-    discount_percentage { nil }
   end
 end

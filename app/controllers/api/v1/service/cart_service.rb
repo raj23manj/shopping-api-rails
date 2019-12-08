@@ -19,7 +19,6 @@ module Api
         
         def update_or_create_cart_detail(cart_detail)
           cart_found = find_cart_detail(cart_detail)
-          
           if(cart_found.blank?)
             cart_found = create_cart_detail(cart_detail) 
           else
@@ -28,6 +27,22 @@ module Api
           end  
           cart_found  
         end  
+        
+        def find_cart_with_items(id)
+          Cart.joins(:cart_details).where(id: id)
+        end 
+        
+        def discounted_cart(cart_id)
+          discount_service.calculate_discount(cart_detail_with_product(cart_id))
+        end 
+        
+        def cart_detail_with_product(cart_id)
+          cart_items = CartDetail.joins(:product)
+                                 .where("cart_details.cart_id = ?", cart_id)  
+                                 .select("products.id as p_id, products.name as p_name, products.price as p_price, 
+                                          cart_details.cart_id as c_cart_id, cart_details.qty as c_qty")
+                                 .to_a
+        end    
         
         def create_cart_detail(cart_detail)
           CartDetail.create!({ product_id: cart_detail[:product_id], 
@@ -42,19 +57,6 @@ module Api
                             :p_id => cart_detail[:product_id]
                           })
         end
-        
-        def find_cart_with_items(id)
-          Cart.joins(:cart_details).where(id: id)
-        end 
-        
-        def discounted_cart(cart_id)
-          cart_items = CartDetail.joins(:product)
-                                 .where("cart_details.cart_id = ?", id)  
-                                 .select("products.name as p_name, products.price as p_price, 
-                                          cart_details.cart_id as c_cart_id, cart_details.qty as c_qty")
-                                 .to_a
-          discount_service.calculate_discount(cart_items)
-        end   
         
       end # class End 
     end 

@@ -14,38 +14,38 @@ module Api
           data.merge( discount_on_total(data[:total_price]) )
         end
         
-        private
-        
         def discount_on_products(cart_items)
           items_with_discount = []
           total_price = 0
           cart_items.each do |item|
             # get the rule suitable for current discount
-            p_discount_rule = (product_discount_rules.select {|rule| rule.qty > item.qty}).sort {|a,b| a.qty <=> b.qty }.first
+            p_discount_rule = (product_discount_rules.select {|rule| (item.p_id == rule.product_id) && (rule.qty >= item.c_qty) })
+                              .sort {|a,b| a.qty <=> b.qty }.first
             # calculate discount
             calculate_discount = calculate_actual_discount(p_discount_rule, item.c_qty, item.p_price) unless p_discount_rule.blank?
+            actual_price = (item.c_qty * item.p_price)
             items_with_discount << OpenStruct.new(cart_id: item.c_cart_id,
                                                   cart_qty: item.c_qty,
                                                   product_name: item.p_name,
                                                   actual_product_price: item.p_price,
-                                                  actual_total: (item.c_qty * item.p_price),
+                                                  actual_total: actual_price,
                                                   discounted_total: (p_discount_rule.blank? ? 0 : calculate_discount),
                                                   actual_discount_price: (p_discount_rule.blank? ? 0 : p_discount_rule.discount_price),
                                                   actual_discount_qty: (p_discount_rule.blank? ? 0 : p_discount_rule.qty)
                                                 )
-            if p_discount_rule.present?
+            if (p_discount_rule.present? && (item.c_qty >= p_discount_rule.qty))
               total_price += calculate_discount #add discounted price
             else
-              total_price += (item.c_qty * item.p_price) # add actual price
+              total_price += actual_price # add actual price
             end     
           end 
-          
+
           { calculated_cart_details: items_with_discount, total_price: total_price } 
         end 
         
         def discount_on_total(total)
-          t_discount_rule = (total_discount_rules.select {|rule| rule.total > total}).sort {|a,b| a.total <=> b.total }.first
-          if t_discount_rule.present?
+          t_discount_rule = (total_discount_rules.select {|rule| total >= rule.total}).sort {|a,b| a.total <=> b.total }.first
+          if (t_discount_rule.present? && (total >= t_discount_rule.total) )
             { discounted_total: (total - t_discount_rule.additional_discount), additional_discount: t_discount_rule.additional_discount}
           else
             { discounted_total: 0, additional_discount: 0}
@@ -54,7 +54,7 @@ module Api
         
         def calculate_actual_discount(rule, qty, actual_price)
           #3 => 75, 5, 10
-          total = rule.discount_price + (actual_price * (qty - rule.qty))
+          rule.discount_price + (actual_price * (qty - rule.qty))
         end    
         
       end # class End 
