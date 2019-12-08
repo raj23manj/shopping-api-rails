@@ -33,8 +33,8 @@ module Api
         end 
         
         def cart_detail_with_product(cart_id)
-          cart_items = CartDetail.joins(:product)
-                                 .where("cart_details.cart_id = ?", cart_id)  
+          cart_items = CartDetail.joins(:product, :cart)
+                                 .where("cart_details.cart_id = ? and carts.active = true", cart_id)  
                                  .select("products.id as p_id, products.name as p_name, products.price as p_price, 
                                           cart_details.cart_id as c_cart_id, cart_details.qty as c_qty")
                                  .to_a
@@ -48,10 +48,13 @@ module Api
         end  
         
         def find_cart_detail(cart_detail)
-          CartDetail.where("cart_id = :c_id and product_id = :p_id ", 
-                          { :c_id => cart_detail[:cart_id], 
-                            :p_id => cart_detail[:product_id]
-                          })
+          CartDetail.joins(:cart)
+                    .where("cart_details.cart_id = :c_id and cart_details.product_id = :p_id and carts.active = true", 
+                            { :c_id => cart_detail[:cart_id], 
+                              :p_id => cart_detail[:product_id]
+                            }
+                          )
+                    .select("cart_details.*")
         end
         
       end # class End 

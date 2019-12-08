@@ -1,6 +1,21 @@
 RSpec.describe 'Cart API', type: :request do
   let!(:product) { create(:product) }
+  let!(:cart) { create(:cart) }
   before { @cart_service = Api::V1::Service::CartService.new  } 
+  
+  
+  describe 'PATCH /api/v1/carts/:cart_id' do
+    let(:valid_attributes) { {"cart" => {"de_activate" => "true"} } }
+    
+    context 'when the request is Update' do
+      before { patch "/api/v1/carts/#{cart.id}", params: valid_attributes } 
+
+      it 'update a cart' do 
+        expect(Cart.find(cart.id).active).to eq(false)
+      end
+    end   
+  end  
+  
   
   describe 'POST /api/v1/carts' do
     # valid payload

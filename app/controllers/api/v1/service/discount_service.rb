@@ -32,7 +32,7 @@ module Api
                                                   discounted_total: (p_discount_rule.blank? ? 0 : calculate_discount),
                                                   actual_discount_price: (p_discount_rule.blank? ? 0 : p_discount_rule.discount_price),
                                                   actual_discount_qty: (p_discount_rule.blank? ? 0 : p_discount_rule.qty)
-                                                )
+                                                ).marshal_dump
             if (p_discount_rule.present? && (item.c_qty >= p_discount_rule.qty))
               total_price += calculate_discount #add discounted price
             else

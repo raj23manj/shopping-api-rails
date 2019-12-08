@@ -5,6 +5,8 @@ module Api
       before_action :set_cart_service, only: [:create, :index]
       
       def index
+        data = @cart_service.discounted_cart(params[:cart_id])
+        json_response(data, :ok)
       end  
       
       #http://localhost:3000/api/v1/carts/10/cart_details

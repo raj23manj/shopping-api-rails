@@ -4,7 +4,7 @@ Rails.application.routes.draw do
       
       resources :products
       
-      resources :carts, only: [:show, :create] do
+      resources :carts, only: [:show, :create, :update] do
         resources :cart_details, only: [:index, :create]
       end
       

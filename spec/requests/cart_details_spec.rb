@@ -1,4 +1,4 @@
-RSpec.describe 'CartDetail API', type: :request do
+RSpec.describe 'CartDetail API', type: :request do 
   let!(:product) { create(:product) }
   let!(:cart) { create(:cart) }
   before { @cart_service = Api::V1::Service::CartService.new  } 
@@ -56,4 +56,56 @@ RSpec.describe 'CartDetail API', type: :request do
       end
     end
   end
+  
+  
+  describe 'GET /api/v1/carts/:cart_id/cart_details' do
+    before { get "/api/v1/carts/#{cart.id}/cart_details" } 
+    
+    context 'when the record exists' do
+      it 'returns status code 200' do
+        allow(@cart_service).to receive(:discounted_cart).and_return({
+                                                                        "data": {
+                                                                            "calculated_cart_details": [
+                                                                                {
+                                                                                    "cart_id": 4,
+                                                                                    "cart_qty": 3,
+                                                                                    "product_name": "A",
+                                                                                    "actual_product_price": 30,
+                                                                                    "actual_total": 90,
+                                                                                    "discounted_total": 75,
+                                                                                    "actual_discount_price": 75,
+                                                                                    "actual_discount_qty": 3
+                                                                                },
+                                                                                {
+                                                                                    "cart_id": 4,
+                                                                                    "cart_qty": 1,
+                                                                                    "product_name": "C",
+                                                                                    "actual_product_price": 50,
+                                                                                    "actual_total": 50,
+                                                                                    "discounted_total": 0,
+                                                                                    "actual_discount_price": 0,
+                                                                                    "actual_discount_qty": 0
+                                                                                },
+                                                                                {
+                                                                                    "cart_id": 4,
+                                                                                    "cart_qty": 1,
+                                                                                    "product_name": "D",
+                                                                                    "actual_product_price": 15,
+                                                                                    "actual_total": 15,
+                                                                                    "discounted_total": 0,
+                                                                                    "actual_discount_price": 0,
+                                                                                    "actual_discount_qty": 0
+                                                                                }
+                                                                            ],
+                                                                            "total_price": 140,
+                                                                            "discounted_total": 0,
+                                                                            "additional_discount": 0
+                                                                        }
+                                                                    })
+          
+        expect(response).to have_http_status(200)
+      end
+    end  
+  end  
+  
 end  
