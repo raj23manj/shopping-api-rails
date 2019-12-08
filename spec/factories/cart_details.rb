@@ -3,8 +3,6 @@ FactoryBot.define do
     product_id { nil }
     cart_id { nil }
     qty { nil }
-    actual_price { nil }
-    discounted_price { nil }
     active { true }
   end
 end

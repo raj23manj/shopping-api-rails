@@ -2,7 +2,6 @@ module Api
   module V1
     module Service  
       class CartService
-        
         attr_reader :discount_service
         
         def initialize

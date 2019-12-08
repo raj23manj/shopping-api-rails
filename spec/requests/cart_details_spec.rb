@@ -16,10 +16,8 @@ RSpec.describe 'CartDetail API', type: :request do
                                                                                         "id": 11,
                                                                                         "qty": 41,
                                                                                         "product_id": product.id,
-                                                                                        "cart_id": cart.id,
-                                                                                        "actual_price": nil,
-                                                                                        "discounted_price": nil
-                                                                                    }
+                                                                                        "cart_id": cart.id
+                                                                                     }
                                                                                 }])
         expect(json["data"]["qty"]).to eq(41)
       end
@@ -30,9 +28,7 @@ RSpec.describe 'CartDetail API', type: :request do
                                                                       "id": 11,
                                                                       "qty": 41,
                                                                       "product_id": product.id,
-                                                                      "cart_id": cart.id,
-                                                                      "actual_price": nil,
-                                                                      "discounted_price": nil
+                                                                      "cart_id": cart.id
                                                                   }
                                                               })
         

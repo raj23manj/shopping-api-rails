@@ -2,7 +2,6 @@ module Api
   module V1
     module Service  
       class DiscountService
-        
         attr_reader :product_discount_rules, :total_discount_rules
         
         def initialize
@@ -12,7 +11,7 @@ module Api
         
         def calculate_discount(cart_items)
           data = discount_on_products(cart_items)
-          data.merge({discount_on_total(data[:total_price])})
+          data.merge( discount_on_total(data[:total_price]) )
         end
         
         private
@@ -22,7 +21,7 @@ module Api
           total_price = 0
           cart_items.each do |item|
             # get the rule suitable for current discount
-            p_discount_rule = (product_discount_rules.select {|rule| rule.qty > item.qty}).sort {|a,b| b <=> a}.first
+            p_discount_rule = (product_discount_rules.select {|rule| rule.qty > item.qty}).sort {|a,b| a.qty <=> b.qty }.first
             # calculate discount
             calculate_discount = calculate_actual_discount(p_discount_rule, item.c_qty, item.p_price) unless p_discount_rule.blank?
             items_with_discount << OpenStruct.new(cart_id: item.c_cart_id,
@@ -34,13 +33,18 @@ module Api
                                                   actual_discount_price: (p_discount_rule.blank? ? 0 : p_discount_rule.discount_price),
                                                   actual_discount_qty: (p_discount_rule.blank? ? 0 : p_discount_rule.qty)
                                                 )
-            total_price += calculate_discount
+            if p_discount_rule.present?
+              total_price += calculate_discount #add discounted price
+            else
+              total_price += (item.c_qty * item.p_price) # add actual price
+            end     
           end 
-          { discounted_cart_details: items_with_discount, total_price: total_price } 
+          
+          { calculated_cart_details: items_with_discount, total_price: total_price } 
         end 
         
         def discount_on_total(total)
-          t_discount_rule = (total_discount_rules.select {|rule| rule.total > total}).sort {|a,b| b <=> a}.first
+          t_discount_rule = (total_discount_rules.select {|rule| rule.total > total}).sort {|a,b| a.total <=> b.total }.first
           if t_discount_rule.present?
             { discounted_total: (total - t_discount_rule.additional_discount), additional_discount: t_discount_rule.additional_discount}
           else
