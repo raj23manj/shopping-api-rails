@@ -214,31 +214,6 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
     end
   end 
   
-  describe 'Test Case 5' do
-    context " A, A, A, A, A => Rs. 130" do
-      before do
-        @cart_detail1 = create(:cart_detail, product_id: product1.id, cart_id: cart.id, qty: 6) 
-        @response = @cart_service.discounted_cart(cart.id)
-      end
-      
-      it "run total_price" do
-        expect(@response[:total_price]).to eq(150)
-      end
-      
-      it "run discounted_total" do
-        expect(@response[:discounted_total]).to eq(130)
-      end
-      
-      it "run additional_discount" do
-        expect(@response[:additional_discount]).to eq(20)
-      end
-      
-      it "run calculated_cart_details" do
-        expect(@response[:calculated_cart_details].size).to eq(1)
-      end
-    end
-  end 
-  
   describe 'Test Case 6' do
     context " 5A, 5B, 1C, 1D => Rs. 270" do
       before do
