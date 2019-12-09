@@ -17,10 +17,17 @@ module Api
         head :no_content
       end
       
+      def cart_is_active
+        # assuming default user as 1 , cart_params[:user_id]
+        cart = Cart.where("active = true and user_id = 1")
+        json_response(CartSerializer.new(cart.first).as_json, :created)
+      end  
+      
       private
 
       def cart_params
-        params.require(:cart).permit(:de_activate, :is_new, cart_detail: [:product_id, :qty])
+        params.require(:cart).permit(:de_activate, :user_id, :is_new, 
+                                     cart_detail: [:product_id, :qty])
       end
       
       def set_cart_service
@@ -28,7 +35,7 @@ module Api
       end  
       
       def set_cart
-        @cart = Cart.find(params[:id])
+        @cart = Cart.where("active = true and id = ?", params[:id])
       end
       
     end

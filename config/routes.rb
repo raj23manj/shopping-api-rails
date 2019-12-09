@@ -11,6 +11,10 @@ Rails.application.routes.draw do
             get 'count'
           end
         end
+        
+        collection do
+          get 'cart_is_active'
+        end
       end
       
     end
