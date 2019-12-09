@@ -57,9 +57,18 @@ RSpec.describe 'CartDetail API', type: :request do
     end
   end
   
+  describe 'GET /api/v1/carts/:cart_id/cart_details/count' do  
+    before { get "/api/v1/carts/#{99}/cart_details/count" }  
+    
+    it 'returns a validation failure message' do
   
-  describe 'GET /api/v1/carts/:cart_id/cart_details' do
-    before { get "/api/v1/carts/#{cart.id}/cart_details" } 
+      expect(json["data"]).to eq(0)
+    end
+    
+  end
+  
+  describe 'GET /api/v1/carts/:cart_id/cart_details/calculated_cart_details' do 
+    before { get "/api/v1/carts/#{cart.id}/cart_details/calculated_cart_details" } 
     
     context 'when the record exists' do
       it 'returns status code 200' do

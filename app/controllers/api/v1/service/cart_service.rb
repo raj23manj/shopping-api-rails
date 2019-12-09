@@ -57,6 +57,10 @@ module Api
                     .select("cart_details.*")
         end
         
+        def current_cart_count(cart_id)
+          (CartDetail.where("cart_id = ?", cart_id).select("count(*)").to_a).first["count(*)"]
+        end  
+        
       end # class End 
     end 
   end 
