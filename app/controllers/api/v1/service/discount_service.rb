@@ -19,7 +19,7 @@ module Api
           total_price = 0
           cart_items.each do |item|
             # get the rule suitable for current discount
-            p_discount_rule = (product_discount_rules.select {|rule| (item.p_id == rule.product_id) && (rule.qty >= item.c_qty) })
+            p_discount_rule = (product_discount_rules.select {|rule| (item.p_id == rule.product_id) && (item.c_qty >= rule.qty) })
                               .sort {|a,b| a.qty <=> b.qty }.first
             # calculate discount
             calculate_discount = calculate_actual_discount(p_discount_rule, item.c_qty, item.p_price) unless p_discount_rule.blank?
@@ -46,7 +46,8 @@ module Api
         
         def calculate_actual_discount(rule, qty, actual_price)
           #3 => 75, 5, 10
-          rule.discount_price + (actual_price * (qty - rule.qty))
+          discounted_qty = ((qty/rule.qty).to_s.split(".").first).to_i
+          (rule.discount_price * discounted_qty ) + (actual_price * (qty - (discounted_qty * rule.qty)))
         end   
         
         def create_discounted_product(item, p_discount_rule, actual_price, calculate_discount)
