@@ -18,6 +18,7 @@ module Api
         json_response(CartDetailSerializer.new(data).as_json, :created)
       end
       
+      #Calulations For Discounrs
       def calculated_cart_details
         data = @cart_service.discounted_cart(params[:cart_id])
         json_response(data, :ok)

@@ -20,7 +20,7 @@ module Api
       def cart_is_active
         # assuming default user as 1 , cart_params[:user_id]
         cart = Cart.where("active = true and user_id = 1")
-        json_response(CartSerializer.new(cart.first).as_json, :created)
+        json_response(cart.present? ? CartSerializer.new(cart.first).as_json : nil, :created)
       end  
       
       private

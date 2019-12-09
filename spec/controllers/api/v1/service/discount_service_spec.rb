@@ -15,7 +15,7 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
   #before { @discount_service = Api::V1::Service::DiscountService.new }
   before do
     @cart_service = Api::V1::Service::CartService.new 
-    @discount_service = Api::V1::Service::DiscountService.new 
+    @discount_service = Api::V1::Service::DiscountService.new(DiscountRule.all.to_a, TotalDiscountRule.all.to_a) 
   end
   
   after(:all) do
@@ -29,7 +29,7 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
         @cart_detail2 = create(:cart_detail, product_id: product2.id, cart_id: cart.id, qty: 1) 
         @cart_detail3 = create(:cart_detail, product_id: product3.id, cart_id: cart.id, qty: 1)
         @items = @cart_service.cart_detail_with_product(cart.id)
-         
+  
         @response = @discount_service.discount_on_products(@items)  
       end
   
@@ -60,12 +60,12 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
       it "run discounted_total" do
         expect(@response[:discounted_total]).to eq(155)
       end
-      
+  
       it "run additional_discount" do
         expect(@response[:additional_discount]).to eq(20)
       end
     end
-    
+  
     context "Return expected Result without discount" do
       before do
         @response = @discount_service.discount_on_total(140)  
@@ -74,7 +74,7 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
       it "run discounted_total" do
         expect(@response[:discounted_total]).to eq(0)
       end
-      
+  
       it "run additional_discount" do
         expect(@response[:additional_discount]).to eq(0)
       end
@@ -143,19 +143,19 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
         @cart_detail4 = create(:cart_detail, product_id: product4.id, cart_id: cart.id, qty: 1) 
         @response = @cart_service.discounted_cart(cart.id)
       end
-      
+  
       it "run total_price" do
         expect(@response[:total_price]).to eq(175)
       end
-      
+  
       it "run discounted_total" do
         expect(@response[:discounted_total]).to eq(155)
       end
-      
+  
       it "run additional_discount" do
         expect(@response[:additional_discount]).to eq(20)
       end
-      
+  
       it "run calculated_cart_details" do
         expect(@response[:calculated_cart_details].size).to eq(4)
       end
@@ -170,19 +170,19 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
         @cart_detail3 = create(:cart_detail, product_id: product4.id, cart_id: cart.id, qty: 1) 
         @response = @cart_service.discounted_cart(cart.id)
       end
-      
+  
       it "run total_price" do
         expect(@response[:total_price]).to eq(140)
       end
-      
+  
       it "run discounted_total" do
         expect(@response[:discounted_total]).to eq(0)
       end
-      
+  
       it "run additional_discount" do
         expect(@response[:additional_discount]).to eq(0)
       end
-      
+  
       it "run calculated_cart_details" do
         expect(@response[:calculated_cart_details].size).to eq(3)
       end
@@ -195,19 +195,19 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
         @cart_detail1 = create(:cart_detail, product_id: product1.id, cart_id: cart.id, qty: 6) 
         @response = @cart_service.discounted_cart(cart.id)
       end
-      
+  
       it "run total_price" do
         expect(@response[:total_price]).to eq(150)
       end
-      
+  
       it "run discounted_total" do
         expect(@response[:discounted_total]).to eq(130)
       end
-      
+  
       it "run additional_discount" do
         expect(@response[:additional_discount]).to eq(20)
       end
-      
+  
       it "run calculated_cart_details" do
         expect(@response[:calculated_cart_details].size).to eq(1)
       end
@@ -223,19 +223,19 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
         @cart_detail4 = create(:cart_detail, product_id: product4.id, cart_id: cart.id, qty: 1)  
         @response = @cart_service.discounted_cart(cart.id)
       end
-      
+  
       it "run total_price" do
         expect(@response[:total_price]).to eq(290)
       end
-      
+  
       it "run discounted_total" do
         expect(@response[:discounted_total]).to eq(270)
       end
-      
+  
       it "run additional_discount" do
         expect(@response[:additional_discount]).to eq(20)
       end
-      
+  
       it "run calculated_cart_details" do
         expect(@response[:calculated_cart_details].size).to eq(4)
       end

@@ -5,7 +5,9 @@ module Api
         attr_reader :discount_service
         
         def initialize
-          @discount_service = Service::DiscountService.new
+          # equivalent to Checkout.new(rules)
+          @discount_service = Service::DiscountService.new(DiscountRule.all.to_a, 
+                                                           TotalDiscountRule.all.to_a)
         end
         
         def create_cart(cart_detail, user_id=1)
