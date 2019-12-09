@@ -24,15 +24,7 @@ module Api
             # calculate discount
             calculate_discount = calculate_actual_discount(p_discount_rule, item.c_qty, item.p_price) unless p_discount_rule.blank?
             actual_price = (item.c_qty * item.p_price)
-            items_with_discount << OpenStruct.new(cart_id: item.c_cart_id,
-                                                  cart_qty: item.c_qty,
-                                                  product_name: item.p_name,
-                                                  actual_product_price: item.p_price,
-                                                  actual_total: actual_price,
-                                                  discounted_total: (p_discount_rule.blank? ? 0 : calculate_discount),
-                                                  actual_discount_price: (p_discount_rule.blank? ? 0 : p_discount_rule.discount_price),
-                                                  actual_discount_qty: (p_discount_rule.blank? ? 0 : p_discount_rule.qty)
-                                                ).marshal_dump
+            items_with_discount << create_discounted_product(item, p_discount_rule, actual_price, calculate_discount)
             if (p_discount_rule.present? && (item.c_qty >= p_discount_rule.qty))
               total_price += calculate_discount #add discounted price
             else
@@ -55,7 +47,19 @@ module Api
         def calculate_actual_discount(rule, qty, actual_price)
           #3 => 75, 5, 10
           rule.discount_price + (actual_price * (qty - rule.qty))
-        end    
+        end   
+        
+        def create_discounted_product(item, p_discount_rule, actual_price, calculate_discount)
+          OpenStruct.new(cart_id: item.c_cart_id,
+                                                cart_qty: item.c_qty,
+                                                product_name: item.p_name,
+                                                actual_product_price: item.p_price,
+                                                actual_total: actual_price,
+                                                discounted_total: (p_discount_rule.blank? ? 0 : calculate_discount),
+                                                actual_discount_price: (p_discount_rule.blank? ? 0 : p_discount_rule.discount_price),
+                                                actual_discount_qty: (p_discount_rule.blank? ? 0 : p_discount_rule.qty)
+                                              ).marshal_dump
+        end   
         
       end # class End 
     end 
