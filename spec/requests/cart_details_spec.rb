@@ -1,8 +1,11 @@
 RSpec.describe 'CartDetail API', type: :request do 
   let!(:product) { create(:product) }
   let!(:cart) { create(:cart) }
-  before { @cart_service = Api::V1::Service::CartService.new  } 
-  
+  before do 
+    @discount_service = Api::V1::Service::DiscountService.new(DiscountRule.all.to_a, TotalDiscountRule.all.to_a)
+    @cart_service = Api::V1::Service::CartService.new(@discount_service)    
+  end 
+   
   describe 'POST /api/v1/carts/cart.id/cart_details' do
     # valid payload
     let(:valid_attributes) { { "cart_detail": {"product_id": product.id, "qty": "41", "cart_id": cart.id} } }

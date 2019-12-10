@@ -13,10 +13,9 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
   # Cart
   let!(:cart) { create(:cart) }
   
-  #before { @discount_service = Api::V1::Service::DiscountService.new }
   before do
-    @cart_service = Api::V1::Service::CartService.new() 
-    @discount_service = Api::V1::Service::DiscountService.new(DiscountRule.all.to_a, TotalDiscountRule.all.to_a) 
+    @discount_service = Api::V1::Service::DiscountService.new(DiscountRule.all.to_a, TotalDiscountRule.all.to_a)
+    @cart_service = Api::V1::Service::CartService.new(@discount_service) 
   end
   
   after(:all) do

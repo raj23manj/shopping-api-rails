@@ -9,16 +9,12 @@ module Api
         json_response(data, :ok)
       end  
       
-      #http://localhost:3000/api/v1/carts/10/cart_details
-      #{
-      #   "cart_detail": {"product_id": "19", "qty": null, "cart_id": "10"} 
-      # }
       def create
         data = @cart_service.update_or_create_cart_detail(cart_detail_params) 
         json_response(CartDetailSerializer.new(data).as_json, :created)
       end
       
-      #Calulations For Discounrs
+      #Calulations For Discounts
       def calculated_cart_details
         data = @cart_service.discounted_cart(params[:cart_id])
         json_response(data, :ok)
@@ -31,7 +27,10 @@ module Api
       end
       
       def set_cart_service
-        @cart_service = Service::CartService.new()
+        # similar to Checkout.new(rules) of pseudo code
+        discount_service = Service::DiscountService.new(DiscountRule.all.to_a, 
+                                                        TotalDiscountRule.all.to_a)
+        @cart_service = Service::CartService.new(discount_service)
       end  
       
     end
