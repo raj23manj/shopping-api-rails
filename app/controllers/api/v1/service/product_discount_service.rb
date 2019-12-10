@@ -14,14 +14,30 @@ module Api
           cart_items.each do |item|
             # get the rule suitable for current discount
             # if multiple rules are there for one product get the current sutible one
-            p_discount_rule = (rules.select {|rule| (item.p_id == rule.product_id) && (rule.qty <= item.c_qty) })
-                              .sort {|a,b| b.qty <=> a.qty }.first            
-            # calculate discount
-            calculate_discount = p_discount_rule.present? ? calculate_actual_discount(p_discount_rule, item.c_qty, item.p_price) : 0
-            actual_price = (item.c_qty * item.p_price)
-            items_with_discount << create_discounted_product(item, p_discount_rule, actual_price, calculate_discount)
+            # p_discount_rule = (rules.select {|rule| (item.p_id == rule.product_id) && (rule.qty <= item.c_qty) })
+            #                   .sort {|a,b| b.qty <=> a.qty }.first   
             
-            if (p_discount_rule.present? && (item.c_qty >= p_discount_rule.qty))
+            p_discount_rules = (rules.select {|rule| (item.p_id == rule.product_id) && (rule.qty <= item.c_qty) })
+                              .sort {|a,b| b.qty <=> a.qty }  
+                     
+            # calculate discount
+            # calculate_discount = p_discount_rule.present? ? calculate_actual_discount(p_discount_rule, item.c_qty, item.p_price) : 0
+            #calculate_discount = p_discount_rule.present? ?  : 0
+            calculate_discount = if(p_discount_rules.present?)
+                                    best_discount = calculate_best_discount(p_discount_rules, item.c_qty, item.p_price)
+                                    rule_discount_applied = p_discount_rules.select {|rule| rule.id == best_discount.keys.first}.first
+                                    best_discount.values.first
+                                 else
+                                    rule_discount_applied = nil
+                                    0
+                                 end    
+            
+            
+            actual_price = (item.c_qty * item.p_price)
+            # items_with_discount << create_discounted_product(item, p_discount_rule, actual_price, calculate_discount)
+            items_with_discount << create_discounted_product(item, rule_discount_applied, actual_price, calculate_discount)
+            
+            if (rule_discount_applied.present? && (item.c_qty >= rule_discount_applied.qty))
               total_price += calculate_discount #add discounted price
             else
               total_price += actual_price # add actual price
@@ -31,9 +47,18 @@ module Api
           { calculated_cart_details: items_with_discount, total_price: total_price } 
         end 
         
+        def calculate_best_discount(rules, item_qty, item_price)
+          all_rule_discounted = []
+          rules.each do |rule| 
+            all_rule_discounted << calculate_actual_discount(rule, item_qty, item_price)
+          end
+          all_rule_discounted.sort{|a,b| a.values.first <=> b.values.first}.first  
+        end  
+        
         def calculate_actual_discount(rule, qty, actual_price)
           discounted_qty = ((qty/rule.qty).to_s.split(".").first).to_i
-          (rule.discount_price * discounted_qty ) + (actual_price * (qty - (discounted_qty * rule.qty)))
+          discounted_price = (rule.discount_price * discounted_qty ) + (actual_price * (qty - (discounted_qty * rule.qty)))
+          { rule.id => discounted_price }
         end   
         
         def create_discounted_product(item, p_discount_rule, actual_price, calculate_discount)

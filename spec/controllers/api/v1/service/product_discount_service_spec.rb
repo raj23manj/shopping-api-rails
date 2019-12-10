@@ -44,7 +44,7 @@ RSpec.describe Api::V1::Service::ProductDiscountService, type: :service do
       end
   
       it "run total_price" do
-        expect(@response).to eq(135)
+        expect(@response).to eq({1=>135})
       end
     end
   end
