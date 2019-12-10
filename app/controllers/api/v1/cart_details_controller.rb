@@ -28,8 +28,7 @@ module Api
       
       def set_cart_service
         # similar to Checkout.new(rules) of pseudo code
-        discount_service = Service::DiscountService.new(DiscountRule.all.to_a, 
-                                                        TotalDiscountRule.all.to_a)
+        discount_service = Service::DiscountService.new()
         @cart_service = Service::CartService.new(discount_service)
       end  
       

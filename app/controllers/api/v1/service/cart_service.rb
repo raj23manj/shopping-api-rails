@@ -6,7 +6,7 @@ module Api
         
         def initialize(discount_service = nil)
           # equivalent to Checkout.new(rules)
-          @discount_service = discount_service if discount_service.present?
+          @discount_service = discount_service 
         end
         
         def create_cart(cart_detail, user_id=1)
@@ -31,7 +31,11 @@ module Api
         
         def discounted_cart(cart_id)
           discount_service.calculate_discount(cart_detail_with_product(cart_id))
-        end 
+        end
+        
+        def current_cart_count(cart_id)
+          (CartDetail.where("cart_id = ?", cart_id).select("count(*)").to_a).first["count(*)"]
+        end   
         
         def cart_detail_with_product(cart_id)
           cart_items = CartDetail.joins(:product, :cart)
@@ -40,6 +44,8 @@ module Api
                                           cart_details.cart_id as c_cart_id, cart_details.qty as c_qty")
                                  .to_a
         end    
+        
+        private
         
         def create_cart_detail(cart_detail)
           CartDetail.create!({ product_id: cart_detail[:product_id], 
@@ -57,10 +63,6 @@ module Api
                           )
                     .select("cart_details.*")
         end
-        
-        def current_cart_count(cart_id)
-          (CartDetail.where("cart_id = ?", cart_id).select("count(*)").to_a).first["count(*)"]
-        end  
         
       end # class End 
     end 
