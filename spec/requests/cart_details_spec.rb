@@ -2,7 +2,7 @@ RSpec.describe 'CartDetail API', type: :request do
   let!(:product) { create(:product) }
   let!(:cart) { create(:cart) }
   before do 
-    @discount_service = Api::V1::Service::DiscountService.new(DiscountRule.all.to_a, TotalDiscountRule.all.to_a)
+    @discount_service = Api::V1::Service::DiscountService.new() 
     @cart_service = Api::V1::Service::CartService.new(@discount_service)    
   end 
    

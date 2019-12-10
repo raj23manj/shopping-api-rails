@@ -21,40 +21,7 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
   after(:all) do
     CartDetail.delete_all
   end
-  # 
-  # 
-  # 
-  # 
-  # 
-  # describe "discount_on_total method" do
-  #   context "Return expected Result with discount" do
-  #     before do
-  #       @response = @discount_service.discount_on_total(175)  
-  #     end
-  # 
-  #     it "run discounted_total" do
-  #       expect(@response[:discounted_total]).to eq(155)
-  #     end
-  # 
-  #     it "run additional_discount" do
-  #       expect(@response[:additional_discount]).to eq(20)
-  #     end
-  #   end
-  # 
-  #   context "Return expected Result without discount" do
-  #     before do
-  #       @response = @discount_service.discount_on_total(140)  
-  #     end
-  # 
-  #     it "run discounted_total" do
-  #       expect(@response[:discounted_total]).to eq(0)
-  #     end
-  # 
-  #     it "run additional_discount" do
-  #       expect(@response[:additional_discount]).to eq(0)
-  #     end
-  #   end
-  # end
+  
   # 
   # describe 'Test Case 1' do
   #   context "A,B,C => Rs. 100" do
