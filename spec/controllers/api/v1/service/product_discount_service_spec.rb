@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe Api::V1::Service::ProductDiscountService, type: :service do
   # Custom Products
   let!(:product1) { create(:product, name: "A", price: 30) }
@@ -8,12 +10,13 @@ RSpec.describe Api::V1::Service::ProductDiscountService, type: :service do
   # Cart
   let!(:cart) { create(:cart) }
   
-  after(:all) do
+  before(:all) do
     CartDetail.delete_all
+    DiscountRule.delete_all
   end
   
-  describe "discount_on_products method" do
-    
+  describe "discount_on_products method with one rule per product" do
+  
     before do
       # Product Discount Rules
       @discount_rule1 = create(:discount_rule, product_id: product1.id, qty: 3, discount_price: 75)  # "A"
@@ -22,7 +25,7 @@ RSpec.describe Api::V1::Service::ProductDiscountService, type: :service do
       @discount_service =  Api::V1::Service::DiscountService.new()
       @cart_service = Api::V1::Service::CartService.new(@discount_service) 
     end
-    
+  
     context "Return expected Result" do
       before do
         @cart_detail1 = create(:cart_detail, product_id: product1.id, cart_id: cart.id, qty: 1) 
@@ -37,14 +40,54 @@ RSpec.describe Api::V1::Service::ProductDiscountService, type: :service do
         expect(@response[:total_price]).to eq(100)
       end
     end
-
+  
     context "Return expected Result" do
       before do
         @response = @product_discount_service.calculate_actual_discount(@discount_rule1, 5, 30)  
       end
   
       it "run total_price" do
-        expect(@response).to eq({1=>135})
+        expect(@response).to eq({@discount_rule1.id => 135})
+      end
+    end
+  end
+  
+  describe "discount_on_products method with multiple rules per product" do
+    before do
+      # Product Discount Rules
+      @discount_rule1 = create(:discount_rule, product_id: product1.id, qty: 2, discount_price: 50)  # "A"
+      @discount_rule2 = create(:discount_rule, product_id: product1.id, qty: 3, discount_price: 65)  # "A"
+      @discount_rule3 = create(:discount_rule, product_id: product1.id, qty: 4, discount_price: 90)  # "A"
+      
+      @product_discount_service = Api::V1::Service::ProductDiscountService.new(DiscountRule.all.to_a)
+  
+      @discount_service =  Api::V1::Service::DiscountService.new()
+      @cart_service = Api::V1::Service::CartService.new(@discount_service) 
+    end
+  
+    context "Return expected Result" do
+      before do
+        @cart_detail = create(:cart_detail, product_id: product1.id, cart_id: cart.id, qty: 10) 
+        @items = @cart_service.cart_detail_with_product(cart.id)
+        @response = @product_discount_service.calculate_best_discount(DiscountRule.where("product_id = ?", product1.id).to_a, 
+                                                                      @cart_detail.qty, product1.price)  
+      end
+  
+      it "run total_price" do
+        expect(@response).to eq({@discount_rule2.id => 225})
+      end
+    end
+  
+    context "Return expected Result" do
+      before do
+        @cart_detail = create(:cart_detail, product_id: product1.id, cart_id: cart.id, qty: 11) 
+        @items = @cart_service.cart_detail_with_product(cart.id)
+        @response = @product_discount_service.calculate_best_discount(DiscountRule.where("product_id = ?", product1.id).to_a, 
+                                                                      @cart_detail.qty, product1.price)  
+      end
+
+      it "run total_price" do
+        expect(@response).to eq({@discount_rule2.id => 255})
       end
     end
   end

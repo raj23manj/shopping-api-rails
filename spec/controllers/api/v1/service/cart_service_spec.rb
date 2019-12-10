@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe Api::V1::Service::CartService, type: :service do
   let!(:cart) { create(:cart) }
   let!(:product) { create(:product) }

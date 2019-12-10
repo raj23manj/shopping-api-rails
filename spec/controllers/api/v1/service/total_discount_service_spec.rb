@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe Api::V1::Service::TotalDiscountService, type: :service do  
   describe "discount_on_total method" do
     

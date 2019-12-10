@@ -52,6 +52,7 @@ module Api
           rules.each do |rule| 
             all_rule_discounted << calculate_actual_discount(rule, item_qty, item_price)
           end
+          
           all_rule_discounted.sort{|a,b| a.values.first <=> b.values.first}.first  
         end  
         
