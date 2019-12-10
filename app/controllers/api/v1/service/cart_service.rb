@@ -27,11 +27,11 @@ module Api
           end  
           cart_found  
         end  
-        
+        # Get Items With Discounted Data Calculated 
         def discounted_cart(cart_id)
           discount_service.calculate_discount(cart_detail_with_product(cart_id))
         end
-        
+        # Get Count Of Current Cart Items
         def current_cart_count(cart_id)
           (CartDetail.where("cart_id = ?", cart_id).select("count(*)").to_a).first["count(*)"]
         end   

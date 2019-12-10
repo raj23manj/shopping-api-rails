@@ -11,7 +11,7 @@ module Api
         
         def calculate_discount(cart_items)
           data = product_discount_service.discount_on_products(cart_items)
-          data.merge(total_discount_service.discount_on_total(data[:total_price]) )
+          data.merge(total_discount_service.discount_on_total(data[:total_price]))
         end 
         
         private
