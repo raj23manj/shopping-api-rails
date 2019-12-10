@@ -5,7 +5,6 @@ module Api
         attr_reader :discount_service
         
         def initialize(discount_service = nil)
-          # equivalent to Checkout.new(rules)
           @discount_service = discount_service 
         end
         

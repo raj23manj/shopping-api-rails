@@ -13,7 +13,7 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
     CartDetail.delete_all
   end
   
-  describe 'Test Cases' do
+  describe 'Test Cases with one rule per product' do
     before do
       # total discount rule
       @total_discount_rule = create(:total_discount_rule, total: 150, additional_discount: 20) 
