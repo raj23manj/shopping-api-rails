@@ -31,7 +31,7 @@ module Api
       end
       
       def set_cart_service
-        @cart_service = Service::CartService.new
+        @cart_service = Service::CartService.new()
       end  
       
     end

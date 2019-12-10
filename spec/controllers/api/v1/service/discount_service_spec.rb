@@ -9,12 +9,13 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
   # Product Discount Rule
   let!(:discount_rule1) { create(:discount_rule, product_id: product1.id, qty: 3, discount_price: 75) } # "A"
   let!(:discount_rule2) { create(:discount_rule, product_id: product2.id, qty: 2, discount_price: 35) } # "B"
+  
   # Cart
   let!(:cart) { create(:cart) }
   
   #before { @discount_service = Api::V1::Service::DiscountService.new }
   before do
-    @cart_service = Api::V1::Service::CartService.new 
+    @cart_service = Api::V1::Service::CartService.new() 
     @discount_service = Api::V1::Service::DiscountService.new(DiscountRule.all.to_a, TotalDiscountRule.all.to_a) 
   end
   
@@ -190,7 +191,7 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
   end 
   
   describe 'Test Case 5' do
-    context " A, A, A, A, A, A => Rs. 130" do
+    context "A, A, A, A, A, A => Rs. 130" do
       before do
         @cart_detail1 = create(:cart_detail, product_id: product1.id, cart_id: cart.id, qty: 6) 
         @response = @cart_service.discounted_cart(cart.id)

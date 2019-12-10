@@ -20,8 +20,9 @@ module Api
           cart_items.each do |item|
             # get the rule suitable for current discount
             # if multiple rules are there for one product get the current sutible one
-            p_discount_rule = (product_discount_rules.select {|rule| (item.p_id == rule.product_id) })
+            p_discount_rule = (product_discount_rules.select {|rule| (item.p_id == rule.product_id) && (rule.qty <= item.c_qty) })
                               .sort {|a,b| b.qty <=> a.qty }.first
+                              
             # calculate discount
             calculate_discount = p_discount_rule.present? ? calculate_actual_discount(p_discount_rule, item.c_qty, item.p_price) : 0
             actual_price = (item.c_qty * item.p_price)
