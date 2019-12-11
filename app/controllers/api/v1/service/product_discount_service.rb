@@ -103,7 +103,7 @@ module Api
         
         def calculate_actual_discount(rule, qty)
           discounted_qty = ((qty/rule.qty).to_s.split(".").first).to_i
-          discounted_price = (rule.discount_price * discounted_qty ) #+ (actual_price * (qty - (discounted_qty * rule.qty)))
+          discounted_price = (rule.discount_price * discounted_qty ) 
           remaninig_qty = qty - (discounted_qty * rule.qty)
           {price: discounted_price, remaninig_qty: remaninig_qty}
         end   
