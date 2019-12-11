@@ -15,6 +15,76 @@ RSpec.describe Api::V1::Service::DiscountService, type: :service do
     CartDetail.delete_all
   end
   
+  
+  describe "discount_on_products method with multiple rules per product" do
+    before do
+      # total discount rule
+      @total_discount_rule = create(:total_discount_rule, total: 150, additional_discount: 20) 
+        # Product Discount Rules
+      @discount_ruleA1 = create(:discount_rule, product_id: product1.id, qty: 2, discount_price: 50)  # "A"
+      @discount_ruleA2 = create(:discount_rule, product_id: product1.id, qty: 3, discount_price: 65)  # "A"
+      @discount_ruleA3 = create(:discount_rule, product_id: product1.id, qty: 4, discount_price: 90)  # "A"
+        
+      @discount_ruleB1 = create(:discount_rule, product_id: product2.id, qty: 2, discount_price: 35)  # "B"
+      @discount_ruleB2 = create(:discount_rule, product_id: product2.id, qty: 3, discount_price: 45)  # "B"
+      @discount_ruleB3 = create(:discount_rule, product_id: product2.id, qty: 4, discount_price: 55)  # "B"
+      
+      # Services
+      @discount_service = Api::V1::Service::DiscountService.new()
+      @cart_service = Api::V1::Service::CartService.new(@discount_service)
+    end
+  
+    context "Return expected Result" do
+      before do
+        @cart_detail1 = create(:cart_detail, product_id: product1.id, cart_id: cart.id, qty: 15) 
+        @cart_detail2 = create(:cart_detail, product_id: product2.id, cart_id: cart.id, qty: 15) 
+        @response = @cart_service.discounted_cart(cart.id)  
+      end
+    
+      it "run total_price" do
+        expect(@response[:total_price]).to eq(535)
+      end
+    
+      it "run discounted_total" do
+        expect(@response[:discounted_total]).to eq(515)
+      end
+    
+      it "run additional_discount" do
+        expect(@response[:additional_discount]).to eq(20)
+      end
+    
+      it "run calculated_cart_details" do
+        expect(@response[:calculated_cart_details].size).to eq(2)
+      end
+    end
+    
+    context "Return expected Result" do
+      before do
+        @cart_detail1 = create(:cart_detail, product_id: product1.id, cart_id: cart.id, qty: 7) 
+        @cart_detail2 = create(:cart_detail, product_id: product2.id, cart_id: cart.id, qty: 7) 
+        @response = @cart_service.discounted_cart(cart.id) 
+      end
+  
+      it "run total_price" do
+        expect(@response[:total_price]).to eq(255)
+      end
+  
+      it "run discounted_total" do
+        expect(@response[:discounted_total]).to eq(235)
+      end
+  
+      it "run additional_discount" do
+        expect(@response[:additional_discount]).to eq(20)
+      end
+  
+      it "run calculated_cart_details" do
+        expect(@response[:calculated_cart_details].size).to eq(2)
+      end
+    end
+    
+  end
+  
+  
   describe 'Test Cases with one rule per product' do
     before do
       # total discount rule

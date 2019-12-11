@@ -22,7 +22,6 @@ module Api
                                  else
                                     0
                                  end    
-            
             actual_price = (item.c_qty * item.p_price)
             items_with_discount << create_discounted_product(item, actual_price, calculate_discount)            
             if(p_discount_rules.present?)

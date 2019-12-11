@@ -16,7 +16,6 @@ RSpec.describe Api::V1::Service::ProductDiscountService, type: :service do
   end
   
   describe "discount_on_products method with one rule per product" do
-  
     before do
       # Product Discount Rules
       @discount_rule1 = create(:discount_rule, product_id: product1.id, qty: 3, discount_price: 75)  # "A"
@@ -38,6 +37,100 @@ RSpec.describe Api::V1::Service::ProductDiscountService, type: :service do
   
       it "run total_price" do
         expect(@response[:total_price]).to eq(100)
+      end
+    end
+  end
+  
+  describe "discount_on_products method with multiple rules per product" do
+    before do
+      @discount_ruleA1 = create(:discount_rule, product_id: product1.id, qty: 2, discount_price: 50)  # "A"
+      @discount_ruleA2 = create(:discount_rule, product_id: product1.id, qty: 3, discount_price: 65)  # "A"
+      @discount_ruleA3 = create(:discount_rule, product_id: product1.id, qty: 4, discount_price: 90)  # "A"
+      
+      # Product Discount Rules
+      @discount_ruleB1 = create(:discount_rule, product_id: product2.id, qty: 2, discount_price: 35)  # "B"
+      @discount_ruleB2 = create(:discount_rule, product_id: product2.id, qty: 3, discount_price: 45)  # "B"
+      @discount_ruleB3 = create(:discount_rule, product_id: product2.id, qty: 4, discount_price: 55)  # "B"
+      
+      @product_discount_service = Api::V1::Service::ProductDiscountService.new(DiscountRule.all.to_a)
+      @discount_service =  Api::V1::Service::DiscountService.new()
+      @cart_service = Api::V1::Service::CartService.new(@discount_service) 
+    end
+  
+    context "Return expected Result" do
+      before do
+        @cart_detail1 = create(:cart_detail, product_id: product1.id, cart_id: cart.id, qty: 15) 
+        @cart_detail2 = create(:cart_detail, product_id: product2.id, cart_id: cart.id, qty: 15) 
+        @items = @cart_service.cart_detail_with_product(cart.id)
+  
+        @response = @product_discount_service.discount_on_products(@items)  
+      end
+  
+      it "run total_price" do
+        expect(@response[:total_price]).to eq(535)
+      end
+    end
+    
+    context "Return expected Result" do
+      before do
+        @cart_detail1 = create(:cart_detail, product_id: product1.id, cart_id: cart.id, qty: 7) 
+        @cart_detail2 = create(:cart_detail, product_id: product2.id, cart_id: cart.id, qty: 7) 
+        @items = @cart_service.cart_detail_with_product(cart.id)
+  
+        @response = @product_discount_service.discount_on_products(@items)  
+      end
+  
+      it "run total_price" do
+        expect(@response[:total_price]).to eq(255)
+      end
+    end
+  end
+  
+  describe "discount_on_products method with multiple rules per product" do
+    before do
+      @discount_ruleA1 = create(:discount_rule, product_id: product1.id, qty: 2, discount_price: 50)  # "A"
+      @discount_ruleA2 = create(:discount_rule, product_id: product1.id, qty: 3, discount_price: 65)  # "A"
+      @discount_ruleA3 = create(:discount_rule, product_id: product1.id, qty: 4, discount_price: 90)  # "A"
+      
+      # Product Discount Rules
+      @discount_ruleB1 = create(:discount_rule, product_id: product2.id, qty: 2, discount_price: 35)  # "B"
+      @discount_ruleB2 = create(:discount_rule, product_id: product2.id, qty: 3, discount_price: 45)  # "B"
+      @discount_ruleB3 = create(:discount_rule, product_id: product2.id, qty: 4, discount_price: 55)  # "B"
+      
+      @product_discount_service = Api::V1::Service::ProductDiscountService.new(DiscountRule.all.to_a)
+      @discount_service =  Api::V1::Service::DiscountService.new()
+      @cart_service = Api::V1::Service::CartService.new(@discount_service) 
+    end
+  
+    context "Return expected Result" do
+      before do
+        @cart_detail1 = create(:cart_detail, product_id: product1.id, cart_id: cart.id, qty: 15) 
+        @cart_detail2 = create(:cart_detail, product_id: product2.id, cart_id: cart.id, qty: 15) 
+        @cart_detail3 = create(:cart_detail, product_id: product3.id, cart_id: cart.id, qty: 1)
+        @cart_detail4 = create(:cart_detail, product_id: product4.id, cart_id: cart.id, qty: 1)
+        @items = @cart_service.cart_detail_with_product(cart.id)
+  
+        @response = @product_discount_service.discount_on_products(@items)  
+      end
+  
+      it "run total_price" do
+        expect(@response[:total_price]).to eq(600)
+      end
+    end
+    
+    context "Return expected Result" do
+      before do
+        @cart_detail1 = create(:cart_detail, product_id: product1.id, cart_id: cart.id, qty: 7) 
+        @cart_detail2 = create(:cart_detail, product_id: product2.id, cart_id: cart.id, qty: 7) 
+        @cart_detail3 = create(:cart_detail, product_id: product3.id, cart_id: cart.id, qty: 1)
+        @cart_detail4 = create(:cart_detail, product_id: product4.id, cart_id: cart.id, qty: 1)
+        @items = @cart_service.cart_detail_with_product(cart.id)
+  
+        @response = @product_discount_service.discount_on_products(@items)  
+      end
+  
+      it "run total_price" do
+        expect(@response[:total_price]).to eq(320)
       end
     end
   end
