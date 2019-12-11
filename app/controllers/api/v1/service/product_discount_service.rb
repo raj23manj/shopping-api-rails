@@ -11,6 +11,7 @@ module Api
         def discount_on_products(cart_items)
           items_with_discount = []
           total_price = 0
+          actual_total_price = 0
           cart_items.each do |item|
             # get the rule suitable for current discount
             # if multiple rules are there for one product get the current sutible one
@@ -28,10 +29,15 @@ module Api
               total_price += calculate_discount #add discounted price
             else
               total_price += actual_price # add actual price
-            end     
+            end
+            
+            actual_total_price = actual_total_price + (item.c_qty * item.p_price)
           end 
 
-          { calculated_cart_details: items_with_discount, total_price: total_price } 
+          { calculated_cart_details: items_with_discount, 
+            total_price: total_price, 
+            no_discount_total: actual_total_price
+          } 
         end 
         
         def calculate_best_discount(rules, item_qty, item_price)        
