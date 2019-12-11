@@ -115,8 +115,6 @@ module Api
                                                 actual_product_price: item.p_price,
                                                 actual_total: actual_price,
                                                 discounted_total: ((calculate_discount == 0) ? 0 : calculate_discount)
-                                                # actual_discount_price: (p_discount_rule.blank? ? 0 : p_discount_rule.discount_price),
-                                                # actual_discount_qty: (p_discount_rule.blank? ? 0 : p_discount_rule.qty)
                                               ).marshal_dump
         end   
         
