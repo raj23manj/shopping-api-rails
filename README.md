@@ -11,5 +11,6 @@
   * bundle exec rspec
 
 * Initial Data Seeding
-  * rake seed:data
+  * rake seed:data_set_1 => standard rule from question
+  * rake seed:data_set_2 => custom rules, i'e multiple rules for one product
   
